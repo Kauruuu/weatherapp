@@ -10,19 +10,19 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                bat 'npm install'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm run build'
+                bat 'npm run build'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm test || true'  // Allow pipeline to continue even if tests fail
+                bat 'npm test || exit 0'  // continue even if tests fail
             }
         }
 
@@ -35,7 +35,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo "Deployment step goes here"
-                // Example: sh 'scp -r build/* user@server:/var/www/html/weatherapp'
+                // Example for Windows server:
+                // bat 'xcopy /E /I build C:\\inetpub\\wwwroot\\weatherapp'
             }
         }
     }
