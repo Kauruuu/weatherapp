@@ -1,24 +1,32 @@
 pipeline {
     agent any
+    tools {
+        maven 'Maven'
+    }
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/Kauruuu/weatherapp.git', branch: 'main'
+                git branch: 'main', url: 'https://github.com/Kauruuu/weatherapp.git'
             }
         }
         stage('Build') {
             steps {
-                bat 'mvn clean install'
+                sh 'mvn clean install'
             }
         }
         stage('Test') {
             steps {
-                bat 'mvn test'
+                sh 'mvn test'
             }
         }
         stage('Package') {
             steps {
-                bat 'mvn package'
+                sh 'mvn package'
+            }
+        }
+        stage('Archive') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
     }
