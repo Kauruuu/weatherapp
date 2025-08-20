@@ -29,5 +29,10 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
+        stage('Deploy') {
+            steps {
+                sh 'java -jar target/*.jar &'
+            }
+        }
     }
 }
