@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    tools {
+        // If your app is Python, comment NodeJS and use Python virtualenv instead
+        nodejs "NodeJS"   // Make sure you configured NodeJS in Jenkins Global Tool Configuration
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -10,43 +15,58 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat 'npm install'
+                script {
+                    // If it's Node.js
+                    sh 'npm install'
+                    
+                    // If it's Python, replace with:
+                    // sh 'pip install -r requirements.txt'
+                }
             }
         }
 
         stage('Build') {
             steps {
-                bat 'npm run build'
+                script {
+                    // For Node.js build
+                    sh 'npm run build'
+
+                    // For Python you might not need a build step
+                }
             }
         }
 
         stage('Test') {
             steps {
-                bat 'npm test || exit 0'  // continue even if tests fail
-            }
-        }
+                script {
+                    // Node.js test
+                    sh 'npm test || true' 
 
-        stage('Package') {
-            steps {
-                archiveArtifacts artifacts: 'build/**', followSymlinks: false
+                    // For Python
+                    // sh 'pytest || true'
+                }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "Deployment step goes here"
-                // Example for Windows server:
-                // bat 'xcopy /E /I build C:\\inetpub\\wwwroot\\weatherapp'
+                echo "Deploying weatherapp..."
+                // Example: If you deploy to Docker, Heroku, or server, add steps here
+                // sh 'docker build -t weatherapp .'
+                // sh 'docker run -d -p 3000:3000 weatherapp'
             }
         }
     }
 
     post {
+        always {
+            echo "Pipeline finished."
+        }
         success {
-            echo '✅ Pipeline completed successfully!'
+            echo "Build SUCCESS ✅"
         }
         failure {
-            echo '❌ Pipeline failed!'
+            echo "Build FAILED ❌"
         }
     }
 }
