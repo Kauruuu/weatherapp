@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs "nodejs"   // Make sure you have NodeJS tool configured in Jenkins
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -26,7 +22,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'npm test || true'  // keep build going even if tests fail
+                sh 'npm test || true'  // Allow pipeline to continue even if tests fail
             }
         }
 
@@ -46,10 +42,10 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo '✅ Pipeline completed successfully!'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo '❌ Pipeline failed!'
         }
     }
 }
